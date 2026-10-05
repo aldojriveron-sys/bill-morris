@@ -569,6 +569,15 @@ function startRec() {
     if (awake && finalSaid && !/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)) handle(finalSaid);
   };
   rec.onerror = (ev) => {
+    if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
+      armed = false;
+      awake = false;
+      wakeBtn.textContent = "Arm Bill";
+      wakeBtn.classList.remove("off");
+      setStatus("", "Asleep");
+      hint.textContent = "Mic blocked. Allow it, then tap Arm Bill.";
+      return;
+    }
     if (ev.error === "aborted" || ev.error === "no-speech") return;
     if (awake || armed) setTimeout(startRec, 700);
   };
