@@ -536,6 +536,7 @@ function startRec() {
   if (!awake && !armed) return;
   try { rec && rec.abort(); } catch (e) {}
   rec = new SR();
+  const mine = rec;
   rec.lang = "en-US";
   rec.interimResults = true;
   rec.continuous = true;
@@ -554,7 +555,10 @@ function startRec() {
     if (ev.error === "aborted" || ev.error === "no-speech") return;
     if (awake || armed) setTimeout(startRec, 700);
   };
-  rec.onend = () => { if ((awake || armed) && !speaking) setTimeout(startRec, 250); };
+  rec.onend = () => {
+    if (rec !== mine) return;
+    if ((awake || armed) && !speaking) setTimeout(startRec, 250);
+  };
   try { rec.start(); if (awake) setStatus("live", "Listening"); } catch (e) {}
 }
 function sleep() {
