@@ -581,6 +581,7 @@ function startRec() {
     if (!awake && hearWake(interim || finalSaid)) { wake(); return; }
     if (awake && finalSaid && !/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)) handle(finalSaid);
   };
+  let ended = false;
   rec.onerror = (ev) => {
     if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
       armed = false;
@@ -591,10 +592,17 @@ function startRec() {
       hint.textContent = "Mic blocked. Allow it, then tap Arm Bill.";
       return;
     }
-    if (ev.error === "aborted" || ev.error === "no-speech") return;
+    if (ev.error === "aborted") return;
+    if (ev.error === "no-speech") {
+      setTimeout(() => {
+        if (!ended && rec === mine && (awake || armed) && !speaking) startRec();
+      }, 400);
+      return;
+    }
     if (awake || armed) setTimeout(startRec, 700);
   };
   rec.onend = () => {
+    ended = true;
     if (rec !== mine) return;
     if ((awake || armed) && !speaking) setTimeout(startRec, 250);
   };
