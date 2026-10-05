@@ -613,7 +613,14 @@ function startRec() {
     setTimeout(() => {
       if (rec !== mine || speaking || document.visibilityState === "hidden") return;
       if (!(awake || armed)) return;
-      try { mine.start(); if (awake) setStatus("live", "Listening"); } catch (err) {}
+      try { mine.start(); if (awake) setStatus("live", "Listening"); }
+      catch (err) {
+        setTimeout(() => {
+          if (rec !== mine || speaking || document.visibilityState === "hidden") return;
+          if (!(awake || armed)) return;
+          startRec();
+        }, 700);
+      }
     }, 350);
   }
 }
