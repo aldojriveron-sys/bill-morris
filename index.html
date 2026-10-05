@@ -566,7 +566,7 @@ function startRec() {
       else interim += chunk;
     }
     if (!awake && hearWake(interim || finalSaid)) { wake(); return; }
-    if (awake && finalSaid) handle(finalSaid);
+    if (awake && finalSaid && !/^\s*(hey|ok|okay)?[, ]*bill[.!,?\s]*$/i.test(finalSaid)) handle(finalSaid);
   };
   rec.onerror = (ev) => {
     if (ev.error === "aborted" || ev.error === "no-speech") return;
