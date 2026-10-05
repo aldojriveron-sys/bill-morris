@@ -564,6 +564,7 @@ async function armPorcupine() {
 function startRec() {
   if (!SR || speaking) return;
   if (!awake && !armed) return;
+  if (document.visibilityState === "hidden") return;
   try { rec && rec.abort(); } catch (e) {}
   rec = new SR();
   const mine = rec;
