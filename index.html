@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=199c5205-0f59-44ee-b40a-53829f58c889
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#e7f4fb" />
+<title>Bill Morris</title>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Bill Morris" />
+<link rel="apple-touch-icon" href="icon.jpg" />
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --bg2: #ffffff;
+    --ink: #121417;
+    --muted: #6b7280;
+    --card: #ffffff;
+    --line: rgba(18,20,23,.08);
+    --accent: #111111;
+    --accent-ink: #ffffff;
+    --bubble: #f3f4f6;
+    --you: #ece7df;
+    --shadow: 0 10px 30px rgba(18,20,23,.06);
+  }
+  body.dark {
+    --bg: #0c1424;
+    --bg2: #121c30;
+    --ink: #f4efe6;
+    --muted: #a9b4c4;
+    --card: #152033;
+    --line: rgba(232, 196, 122, .18);
+    --accent: #e8c47a;
+    --accent-ink: #1b140c;
+    --bubble: #1c2940;
+    --you: #2a2418;
+    --shadow: 0 16px 40px rgba(0,0,0,.45);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    color: var(--ink);
+    font-family: Inter, "Avenir Next", "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, #f7f7f8 0%, #ece7e1 55%, #e7eef3 100%);
+    background-attachment: fixed;
+    overflow: hidden;
+  }
+  body.dark {
+    background:
+      radial-gradient(500px 220px at 80% 0%, rgba(232,196,122,.16), transparent 60%),
+      linear-gradient(180deg, #1a2744 0%, #0d1728 46%, #10141c 100%);
+    background-attachment: fixed;
+  }
+  body.dark header { background: color-mix(in srgb, #0d1728 82%, transparent); }
+  body.dark #theme { background: #e8c47a; color: #1b140c; }
+  .app {
+    max-width: 980px; margin: 0 auto; height: 100dvh;
+    display: grid; grid-template-rows: auto 1fr auto;
+    padding: calc(10px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+    margin: 0 -16px; padding: 8px 16px;
+  }
+  h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.03em; }
+  .sub { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+  .tools { display: flex; gap: 8px; align-items: center; }
+  #theme {
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 650; cursor: pointer;
+    box-shadow: inset 0 0 0 1px transparent;
+  }
+  body.dark #theme { background: #f5f6f8; color: #111; }
+  .pill.live { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  .pill.talk { background: #c9a46a; color: #1b140c; border-color: transparent; }
+  .pill.think { background: var(--ink); color: var(--bg); border-color: transparent; }
+  .stage { display: grid; grid-template-columns: 280px 1fr; gap: 12px; min-height: 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+  .hero { padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow: auto; }
+  .photo-wrap { position: relative; border-radius: 16px; overflow: hidden; background: var(--bg2); }
+  .figure.blink { position: absolute; inset: 0; opacity: 0; animation: blink 5.5s steps(1) infinite; }
+  @keyframes blink { 92% { opacity: 0; } 94% { opacity: 1; } 97% { opacity: 0; } }
+  .swap { display: flex; gap: 8px; }
+  .swap button { flex: 1; min-height: 36px; background: var(--bubble); color: var(--ink); border: 1px solid var(--line); font-size: 12px; }
+  .figure {
+    width: 100%; display: block; aspect-ratio: 4/5; object-fit: cover; object-position: center 12%;
+    animation: idle 3.6s ease-in-out infinite;
+  }
+  .figure.talking { animation: talk .42s ease-in-out infinite; }
+  @keyframes idle { 50% { transform: translateY(-4px); } }
+  @keyframes talk { 50% { transform: translateY(-2px) scale(1.012); } }
+  .nameplate { text-align: center; }
+  .nameplate strong { letter-spacing: .14em; font-size: 12px; }
+  .nameplate em { display: block; color: var(--muted); font-style: normal; font-size: 12px; margin-top: 2px; }
+  .gainhead { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
+  .trait { display: grid; grid-template-columns: 58px 1fr 28px; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); text-transform: lowercase; }
+  .trait i { display: block; height: 8px; border-radius: 99px; background: var(--bubble); overflow: hidden; }
+  .trait i b { display: block; height: 100%; width: 0; min-width: 8px; background: var(--ink); border-radius: 99px; }
+  .track { height: 6px; border-radius: 99px; background: var(--bubble); overflow: hidden; margin: 6px 0; }
+  .fill { height: 100%; width: 0; background: var(--ink); transition: width .4s ease; }
+  .meters { display: flex; align-items: flex-end; gap: 3px; height: 28px; }
+  .meters i { flex: 1; display: block; height: 18%; min-height: 4px; border-radius: 3px; background: var(--bubble); }
+  .meters i.on { background: var(--ink); }
+  .meters i.hot { background: #c46a45; }
+  .traits { display: grid; gap: 4px; }
+  .trait b { color: var(--ink); }
+  .log { padding: 14px; overflow: auto; display: flex; flex-direction: column; gap: 10px; }
+  .bubble { max-width: 88%; padding: 10px 12px; border-radius: 16px; line-height: 1.45; font-size: 15px; }
+  .bubble.bill { align-self: flex-start; background: var(--bubble); }
+  .bubble.you { align-self: flex-end; background: var(--you); }
+  .who { display: block; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+  footer { display: grid; gap: 8px; }
+  .controls { display: flex; gap: 8px; }
+  button { appearance: none; border: 0; cursor: pointer; border-radius: 14px; font-weight: 650; }
+  #wake { flex: 1; min-height: 52px; color: var(--accent-ink); background: var(--accent); font-size: 15px; letter-spacing: .04em; }
+  #wake.off { background: #c46a45; color: white; }
+  #gear { width: 52px; background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+  .hint { color: var(--muted); font-size: 12px; text-align: center; }
+  .panel { display: none; padding: 12px; border-radius: 16px; background: var(--card); border: 1px solid var(--line); gap: 8px; }
+  .panel.open { display: grid; }
+  label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  input, textarea, select { width: 100%; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); padding: 10px; font: inherit; }
+  @media (max-width: 760px) {
+    body { overflow: auto; }
+    .app { height: auto; min-height: 100dvh; }
+    .stage { grid-template-columns: 1fr; }
+    .figure { max-height: 240px; aspect-ratio: 16/10; object-position: center 20%; }
+    .nameplate { display: none; }
+    .hero { padding: 10px; }
+    footer { position: sticky; bottom: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(12px); padding-top: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Bill Morris</h1>
+      <p class="sub" id="rankLine">Day desk</p>
+    </div>
+    <div class="tools">
+      <button id="theme" type="button">Dark</button>
+      <div id="status" class="pill">Asleep</div>
+    </div>
+  </header>
+  <section class="stage">
+    <aside class="card hero">
+      <div class="photo-wrap">
+        <img class="figure" id="bear" src="bill.jpg?v=4" alt="Bill Morris" />
+        <img class="figure blink" id="blink" src="bill-blink.jpg" alt="" />
+      </div>
+      <div class="swap">
+        <button type="button" id="outfit">Night look</button>
+        <button type="button" id="clearDesk">Clear desk</button>
+      </div>
+      <div class="nameplate">
+        <strong>BILL MORRIS</strong>
+        <em id="plate">Day desk</em>
+      </div>
+      <div>
+        <div class="gainhead"><span>Desk gain</span><span id="gainLabel">0</span></div>
+        <div class="track"><div class="fill" id="gainFill"></div></div>
+        <div class="meters" id="meters"></div>
+        <div class="traits" id="channels"></div>
+      </div>
+    </aside>
+    <div class="card log" id="log"></div>
+  </section>
+  <footer>
+    <div id="panel" class="panel">
+      <label for="userName">What he calls you</label>
+      <input id="userName" value="Aldo" />
+      <label for="today">On today</label>
+      <textarea id="today" rows="2" placeholder="Kendall call at 2. Soccer at 7."></textarea>
+      <textarea id="note" rows="2">Keep it short. Help me run the day, the business, and the side work. No corporate voice.</textarea>
+      <label for="picoKey">Porcupine key</label>
+      <input id="picoKey" type="password" placeholder="Paste a Picovoice key. Wake word becomes Jarvis until we train Bill." autocomplete="off" />
+      <select id="voiceSel"></select>
+    </div>
+    <div class="controls">
+      <button id="wake">Arm Bill</button>
+      <button id="gear" aria-label="Settings">⚙</button>
+    </div>
+    <div class="hint" id="hint">One tap arms the mic. Then say Bill. Say sleep to drop back to the wake word.</div>
+  </footer>
+</div>
+<script>
+
+const logEl = document.getElementById("log");
+const wakeBtn = document.getElementById("wake");
+const statusEl = document.getElementById("status");
+const hint = document.getElementById("hint");
+const panel = document.getElementById("panel");
+const nameInput = document.getElementById("userName");
+const noteInput = document.getElementById("note");
+const voiceSel = document.getElementById("voiceSel");
+const gainFill = document.getElementById("gainFill");
+const gainLabel = document.getElementById("gainLabel");
+const rankLine = document.getElementById("rankLine");
+const meters = document.getElementById("meters");
+for (let i = 0; i < 16; i++) meters.appendChild(document.createElement("i"));
+
+const LEVELS = [
+  { at: 0, name: "Cold open" },
+  { at: 12, name: "Line check" },
+  { at: 28, name: "On the desk" },
+  { at: 48, name: "Neighborhood" },
+  { at: 70, name: "After hours" }
+];
+const CHANNELS = ["signal", "trust", "city", "edge", "heat"];
+const store = JSON.parse(localStorage.getItem("bill-morris") || "{}");
+if (store.name) nameInput.value = store.name;
+const today = document.getElementById("today");
+const picoKey = document.getElementById("picoKey");
+if (store.today) today.value = store.today;
+if (store.picoKey) picoKey.value = store.picoKey;
+let memory = store.memory || [];
+let list = store.list || [];
+let channels = Object.assign({ signal: 8, trust: 4, city: 6, edge: 10, heat: 0 }, store.channels || {});
+let lastLine = "";
+let clip = 0;
+
+const channelHost = document.getElementById("channels");
+CHANNELS.forEach(name => {
+  const row = document.createElement("div");
+  row.className = "trait";
+  row.innerHTML = `<span>${name}</span><i><b id="bar-${name}"></b></i><b id="ch-${name}">0</b>`;
+  channelHost.appendChild(row);
+});
+
+function clamp(n) { return Math.max(0, Math.min(100, Math.round(n))); }
+const COMP = { threshold: 55, ratio: 2.2, knee: 6, floorWords: 4 };
+function rawMix() {
+  return channels.signal * 0.34 + channels.trust * 0.28 + channels.city * 0.18 + channels.edge * 0.12 + channels.heat * 0.08;
+}
+function gainReduction(raw) {
+  const over = raw - COMP.threshold;
+  if (over <= -COMP.knee) return 0;
+  if (over >= COMP.knee) return over * (1 - 1 / COMP.ratio);
+  const t = (over + COMP.knee) / (2 * COMP.knee);
+  return t * t * COMP.knee * (1 - 1 / COMP.ratio);
+}
+function master() { return clamp(rawMix() - gainReduction(rawMix())); }
+function deskStatus() {
+  const raw = rawMix();
+  const gr = gainReduction(raw);
+  const gate = gr < 0.4 ? "compressor open, no reduction" : "compressor grabbing " + gr.toFixed(1) + " dB-style points";
+  return `Status. Raw mix ${raw.toFixed(1)}, master ${master()}, ${gate}. Threshold ${COMP.threshold}, ratio ${COMP.ratio}:1, knee ${COMP.knee}. Noise floor is ${COMP.floorWords} words. Under that, signal does not move. Channels: signal ${channels.signal}, trust ${channels.trust}, city ${channels.city}, edge ${channels.edge}, heat ${channels.heat}. Clip strikes ${clip}. Rank ${level().name}.`;
+}
+function level() {
+  const g = master();
+  let current = LEVELS[0];
+  LEVELS.forEach(l => { if (g >= l.at) current = l; });
+  return current;
+}
+function paintGain() {
+  const g = master();
+  const lv = level();
+  gainFill.style.width = g + "%";
+  gainLabel.textContent = g + " · GR " + gainReduction(rawMix()).toFixed(1);
+  rankLine.textContent = "Gain " + g + " · " + lv.name + (clip ? " · clipped" : "");
+  document.getElementById("plate").textContent = lv.name + (clip ? " · redline" : " · compressed desk");
+  CHANNELS.forEach(name => {
+    const el = document.getElementById("ch-" + name);
+    const bar = document.getElementById("bar-" + name);
+    if (el) el.textContent = channels[name];
+    if (bar) bar.style.width = Math.max(8, channels[name]) + "%";
+  });
+}
+function save() {
+  localStorage.setItem("bill-morris", JSON.stringify({
+    name: nameInput.value.trim() || "boss",
+    note: noteInput.value.trim(),
+    today: (document.getElementById("today").value || "").trim(),
+    picoKey: picoKey.value.trim(),
+    memory, list, channels, voice: voiceSel.value
+  }));
+  paintGain();
+}
+nameInput.addEventListener("change", save);
+noteInput.addEventListener("change", save);
+document.getElementById("today").addEventListener("change", save);
+picoKey.addEventListener("change", save);
+paintGain();
+
+function sayLine(who, text) {
+  const div = document.createElement("div");
+  div.className = "bubble " + (who === "Bill" ? "bill" : "you");
+  div.innerHTML = `<span class="who">${who}</span>${text}`;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function setStatus(mode, label) { statusEl.className = "pill " + (mode || ""); statusEl.textContent = label; }
+function you() { return nameInput.value.trim() || "boss"; }
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, awake = false, speaking = false, lastBill = "", voices = [];
+let audioCtx, analyser, micStream, meterTimer;
+
+function pickVoices() {
+  voices = speechSynthesis.getVoices();
+  voiceSel.innerHTML = "";
+  const pool = voices.filter(v => /en(-|_)?(US|GB)/i.test(v.lang));
+  (pool.length ? pool : voices).forEach(v => {
+    const o = document.createElement("option");
+    o.value = v.name; o.textContent = v.name + " · " + v.lang;
+    voiceSel.appendChild(o);
+  });
+  const male = [...voiceSel.options].find(o => /daniel|alex|fred|aaron|rishi|male/i.test(o.value));
+  if (store.voice) voiceSel.value = store.voice;
+  else if (male) voiceSel.value = male.value;
+}
+speechSynthesis.onvoiceschanged = pickVoices;
+pickVoices();
+voiceSel.addEventListener("change", save);
+
+function speak(text) {
+  return new Promise(resolve => {
+    speaking = true;
+    setStatus("talk", "Talking");
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = voices.find(x => x.name === voiceSel.value);
+    if (v) u.voice = v;
+    u.rate = 1.01; u.pitch = 0.9;
+    u.onend = () => { speaking = false; resolve(); };
+    u.onerror = () => { speaking = false; resolve(); };
+    window.speechSynthesis.speak(u);
+  });
+}
+
+async function openMeter() {
+  if (micStream) return;
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx = new AudioContext();
+    const src = audioCtx.createMediaStreamSource(micStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    src.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    const bars = [...meters.children];
+    meterTimer = setInterval(() => {
+      if (!analyser) return;
+      analyser.getByteFrequencyData(data);
+      const avg = data.reduce((a, b) => a + b, 0) / data.length;
+      const hot = Math.round((avg / 48) * bars.length);
+      bars.forEach((bar, i) => {
+        bar.className = i < hot ? (i > 12 ? "hot" : "on") : "";
+        bar.style.height = (18 + (i < hot ? 70 : 10)) + "%";
+      });
+    }, 80);
+  } catch (e) {
+    hint.textContent = "Mic blocked. Allow it, then wake him again.";
+  }
+}
+
+function ride(text) {
+  const q = text.toLowerCase();
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  const notes = [];
+  if (words.length < COMP.floorWords) {
+    channels.heat = clamp(channels.heat - 4);
+    notes.push("under the noise floor, " + words.length + " of " + COMP.floorWords + " words");
+    return notes;
+  }
+  if (lastLine && q === lastLine) {
+    clip = Math.min(3, clip + 1);
+    channels.edge = clamp(channels.edge + 6);
+    channels.signal = clamp(channels.signal - 4);
+    notes.push("same line twice, channel clipped");
+    return notes;
+  }
+  lastLine = q;
+  clip = Math.max(0, clip - 1);
+  const fresh = words.length > 10 ? 6 : 4;
+  const grNow = gainReduction(rawMix());
+  const compressed = grNow > 0.4 ? fresh / COMP.ratio : fresh;
+  channels.signal = clamp(channels.signal + compressed);
+  channels.heat = clamp(channels.heat + 8);
+  if (/remember that|add to (the )?list|plan my|help me/.test(q)) {
+    channels.trust = clamp(channels.trust + 7);
+    notes.push("trust bumped");
+  }
+  if (/forget everything|you suck|shut up|useless/.test(q)) {
+    channels.trust = clamp(channels.trust - 8);
+    channels.edge = clamp(channels.edge + 5);
+    notes.push("trust dipped");
+  }
+  if (/miami|kendall|305|hvac|fixes|soccer|beach|causeway/.test(q)) {
+    channels.city = clamp(channels.city + 6);
+    notes.push("city channel up");
+  }
+  if (/push back|be honest|don't baby me|dont baby me|too long/.test(q) || words.length > 28) {
+    channels.edge = clamp(channels.edge + 4);
+    notes.push("edge up");
+  }
+  channels.heat = clamp(channels.heat - 1);
+  return notes;
+}
+
+function replyTo(raw) {
+  const text = raw.trim();
+  const q = text.toLowerCase();
+  const n = you();
+  const lv = level();
+  if (!text) return "Floor noise. Run it back.";
+  if (/\b(sleep|lights out|toggle off|bill out|shut it down)\b/.test(q)) return "__SLEEP__";
+  if (/who are you|your name|character|personality/.test(q)) {
+    return `Bill Morris. Desk engineer, not a mascot. Beach kid, Kendall rent, hotel-engineer father, mother kept the books. I rate talk the way I rate a mic: too hot, in the pocket, or noisy floor. Right now I'm ${lv.name}. Edge is ${lv.edge}.`;
+  }
+  if (/\b(status|check the desk|where are we|noise floor|compressor)\b/.test(q)) return deskStatus();
+  if (/remember that/.test(q)) {
+    const item = text.replace(/remember that/i, "").trim();
+    if (item) memory.push(item);
+    save();
+    return item ? `Pinned. “${item}.” I don't lose tickets.` : "Remember what?";
+  }
+  if (/what do you remember|the desk/.test(q)) return memory.length ? "Tickets: " + memory.slice(-5).join(". ") : "Desk is clean.";
+  if (/forget everything|clear memory/.test(q)) { memory = []; save(); return "Wiped. Don't make me do that twice."; }
+  if (/add to (the )?list/.test(q)) {
+    const item = text.replace(/add to (the )?list/i, "").trim();
+    if (item) list.push(item);
+    save();
+    return item ? `On the board: ${item}.` : "Add what?";
+  }
+  if (/my list|on the list/.test(q)) return list.length ? list.map((x,i)=>`${i+1}. ${x}`).join(". ") : "Board's empty.";
+  if (/what('s| is) on today|on today|my day/.test(q)) {
+    const board = (document.getElementById("today").value || "").trim();
+    return board ? `Today: ${board}` : "Nothing on the board. Add it in the gear, or say add to today.";
+  }
+  if (/add to today/.test(q)) {
+    const item = text.replace(/add to today/i, "").trim();
+    const box = document.getElementById("today");
+    if (item) box.value = (box.value.trim() ? box.value.trim() + ". " : "") + item;
+    save();
+    return item ? `On today: ${item}.` : "Add what to today?";
+  }
+  if (/what time/.test(q)) return `It’s ${new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"})}. City doesn't punch out.`;
+  if (/miami fixes|hvac|service call|capacitor/.test(q)) {
+    return lv.at >= 8
+      ? `${n}, don't sell the sunset. Filter, thermostat, breaker, capacitor, then you talk compressor. Text the customer the arrival window, not a novel.`
+      : "Service call stays boring on purpose. Show up, name the fault, don't narrate the whole unit.";
+  }
+  if (/instagram|reel|content/.test(q)) return "One clip of the thing you actually did. Face, city, one line. A lecture doesn't get the follow.";
+  if (/soccer|training/.test(q)) return "Touch, sprint, tape, go home. The league can feel you showed up. It cannot feel your speech about showing up.";
+  if (/plan my|what should i do|help me/.test(q)) return `${n}. Money thing, body thing, proof thing. In that order. Orders on file: ${noteInput.value.trim() || "keep it moving."}`;
+  if (/joke/.test(q)) return lv.at >= 48 ? "A guy asked me to manifest a compressor. I manifested a multimeter. We're not the same religion." : "Ask me again when the gain is up. Cold open doesn't do bits.";
+  const pocket = [
+    `Heard. “${text}.” In the pocket. Next move?`,
+    `${n}, that's either a ticket or noise. Say remember that, or add to the list.`,
+    `Copy. I won't dress it up. Master is ${master()}, so I'm still ${lv.name.toLowerCase()}.`,
+    `Don’t sell me the sunset. If “${text}” is the job, we start it.`
+  ];
+  return (lv.at >= 48 ? "Neighborhood rule. " : lv.at >= 28 ? "Desk rule. " : "") + pocket[master() % pocket.length];
+}
+
+async function handle(transcript) {
+  if (speaking) return;
+  const clean = transcript.replace(/\s+/g, " ").trim();
+  if (!clean || (lastBill && clean.toLowerCase().includes(lastBill.toLowerCase().slice(0, 22)))) return;
+  sayLine("You", clean);
+  setStatus("think", "On it");
+  const before = level().name;
+  const notes = ride(clean);
+  save();
+  if (level().name !== before) sayLine("Bill", `Gain up. ${level().name}. Compressor just opened a new rank.`);
+  else if (notes.length) sayLine("Bill", notes[0] + ".");
+  const answer = replyTo(clean);
+  if (answer === "__SLEEP__") {
+    sayLine("Bill", "Lights out. Gain stays on the board.");
+    await speak("Lights out. Gain stays on the board.");
+    sleep();
+    return;
+  }
+  lastBill = answer;
+  sayLine("Bill", answer);
+  await speak(answer);
+  if (awake) { setStatus("live", "Listening"); startRec(); }
+}
+
+let armed = false;
+function hearWake(transcript) {
+  return /\b(hey |ok |okay )?bill\b/.test(transcript.toLowerCase());
+}
+async function arm() {
+  if (picoKey.value.trim()) {
+    const ok = await armPorcupine();
+    if (ok) return;
+  }
+  if (!SR) {
+    sayLine("Bill", "This browser won't hear you. Chrome is the clean line.");
+    return;
+  }
+  armed = true;
+  awake = false;
+  wakeBtn.textContent = "Say Bill";
+  setStatus("live", "Say Bill");
+  hint.textContent = "Mic is armed. Say Bill to wake him. Say sleep to drop back to the wake word.";
+  startRec();
+}
+let porcupine = null;
+async function armPorcupine() {
+  try {
+    const { PorcupineWorker, BuiltInKeyword } = await import("https://esm.sh/@picovoice/porcupine-web@4.0.1");
+    const { WebVoiceProcessor } = await import("https://esm.sh/@picovoice/web-voice-processor@4.0.8");
+    if (porcupine) await porcupine.release();
+    porcupine = await PorcupineWorker.create(
+      picoKey.value.trim(),
+      BuiltInKeyword.Jarvis,
+      () => { if (!awake) wake(); }
+    );
+    await WebVoiceProcessor.subscribe(porcupine);
+    armed = true;
+    wakeBtn.textContent = "Say Jarvis";
+    setStatus("live", "Say Jarvis");
+    hint.textContent = "Porcupine is armed. Say Jarvis. A custom Hey Bill model can replace that later.";
+    return true;
+  } catch (e) {
+    hint.textContent = "Porcupine didn't start. Staying on Say Bill. " + (e.message || "");
+    return false;
+  }
+}
+function startRec() {
+  if (!SR || speaking) return;
+  if (!awake && !armed) return;
+  try { rec && rec.abort(); } catch (e) {}
+  rec = new SR();
+  rec.lang = "en-US";
+  rec.interimResults = true;
+  rec.continuous = true;
+  rec.onresult = (e) => {
+    let interim = "";
+    let finalSaid = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const chunk = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalSaid += chunk;
+      else interim += chunk;
+    }
+    if (!awake && hearWake(interim || finalSaid)) { wake(); return; }
+    if (awake && finalSaid) handle(finalSaid);
+  };
+  rec.onerror = (ev) => {
+    if (ev.error === "aborted" || ev.error === "no-speech") return;
+    if (awake || armed) setTimeout(startRec, 700);
+  };
+  rec.onend = () => { if ((awake || armed) && !speaking) setTimeout(startRec, 250); };
+  try { rec.start(); if (awake) setStatus("live", "Listening"); } catch (e) {}
+}
+function sleep() {
+  awake = false;
+  armed = true;
+  window.speechSynthesis.cancel();
+  wakeBtn.textContent = "Say Bill";
+  wakeBtn.classList.remove("off");
+  setStatus("live", "Say Bill");
+  hint.textContent = "Asleep. Say Bill when you want him.";
+  startRec();
+}
+async function wake() {
+  if (!SR) {
+    sayLine("Bill", "This browser won't hear you. Chrome is the clean line.");
+    speak("This browser will not hear you. Chrome is the clean line.");
+    return;
+  }
+  awake = true;
+  wakeBtn.textContent = "Bill is live";
+  wakeBtn.classList.add("off");
+  await openMeter();
+  const open = `${you()}. I'm here.`;
+  sayLine("Bill", open);
+  lastBill = open;
+  await speak(open);
+  hint.textContent = "Hands-free. Bars are mic gain. The number is desk gain. Say sleep to toggle off.";
+  startRec();
+}
+wakeBtn.addEventListener("click", () => awake ? sleep() : (armed ? wake() : arm()));
+document.getElementById("gear").addEventListener("click", () => panel.classList.toggle("open"));
+sayLine("Bill", "I'm here.");
+
+const bear = document.getElementById("bear");
+const themeBtn = document.getElementById("theme");
+if (localStorage.getItem("bill-theme") === "dark") document.body.classList.add("dark");
+function paintTheme() {
+  const dark = document.body.classList.contains("dark");
+  themeBtn.textContent = dark ? "Light" : "Dark";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#0d1728" : "#f4f5f7");
+  setLook(dark);
+}
+paintTheme();
+themeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("bill-theme", document.body.classList.contains("dark") ? "dark" : "light");
+  paintTheme();
+});
+function setLook(night) {
+  bear.dataset.look = night ? "night" : "day";
+  bear.src = night ? "bill-night.jpg" : "bill.jpg?v=4";
+  document.getElementById("blink").style.display = night ? "none" : "";
+  document.getElementById("outfit").textContent = night ? "Day look" : "Night look";
+}
+document.getElementById("outfit").addEventListener("click", () => setLook(bear.dataset.look !== "night"));
+document.getElementById("clearDesk").addEventListener("click", () => {
+  channels = { signal: 8, trust: 4, city: 6, edge: 10, heat: 0 };
+  clip = 0;
+  save();
+  sayLine("Bill", "Desk cleared.");
+});
+new MutationObserver(() => {
+  bear.classList.toggle("talking", statusEl.classList.contains("talk"));
+  bear.classList.toggle("live", statusEl.classList.contains("live"));
+}).observe(statusEl, { attributes: true, attributeFilter: ["class"] });
+</script>
+</body>
+</html>
