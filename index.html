@@ -609,6 +609,10 @@ function startRec() {
   if (phoneMic()) releaseMeter();
   try { rec.start(); if (awake) setStatus("live", "Listening"); } catch (e) {}
 }
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  if ((awake || armed) && !speaking) startRec();
+});
 function sleep() {
   awake = false;
   armed = true;
