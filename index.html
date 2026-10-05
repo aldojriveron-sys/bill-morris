@@ -345,20 +345,26 @@ function speak(text) {
   return new Promise(resolve => {
     speaking = true;
     setStatus("talk", "Talking");
+    try { rec && rec.abort(); } catch (e) {}
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     heldUtterance = u;
     const v = voices.find(x => x.name === voiceSel.value);
     if (v) u.voice = v;
     u.rate = 1.01; u.pitch = 0.9;
+    let settled = false;
     const done = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(watch);
       speaking = false;
       if (heldUtterance === u) heldUtterance = null;
       resolve();
     };
+    const watch = setTimeout(done, Math.min(12000, 1600 + text.length * 90));
     u.onend = done;
     u.onerror = done;
-    window.speechSynthesis.speak(u);
+    setTimeout(() => window.speechSynthesis.speak(u), 40);
   });
 }
 
