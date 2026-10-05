@@ -599,7 +599,7 @@ async function wake() {
   wakeBtn.textContent = "Bill is live";
   wakeBtn.classList.add("off");
   await openMeter();
-  const open = `${you()}. I'm here.`;
+  const open = `${you()}, I'm here.`;
   sayLine("Bill", open);
   lastBill = open;
   await speak(open);
