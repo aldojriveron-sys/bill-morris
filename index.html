@@ -608,7 +608,14 @@ function startRec() {
     if ((awake || armed) && !speaking) setTimeout(startRec, 250);
   };
   if (phoneMic()) releaseMeter();
-  try { rec.start(); if (awake) setStatus("live", "Listening"); } catch (e) {}
+  try { rec.start(); if (awake) setStatus("live", "Listening"); }
+  catch (e) {
+    setTimeout(() => {
+      if (rec !== mine || speaking || document.visibilityState === "hidden") return;
+      if (!(awake || armed)) return;
+      try { mine.start(); if (awake) setStatus("live", "Listening"); } catch (err) {}
+    }, 350);
+  }
 }
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState !== "visible") return;
