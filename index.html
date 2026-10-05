@@ -306,6 +306,7 @@ function you() { return nameInput.value.trim() || "boss"; }
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let rec = null, awake = false, speaking = false, lastBill = "", voices = [];
 let audioCtx, analyser, micStream, meterTimer;
+let heldUtterance = null;
 
 function phoneMic() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -346,11 +347,17 @@ function speak(text) {
     setStatus("talk", "Talking");
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
+    heldUtterance = u;
     const v = voices.find(x => x.name === voiceSel.value);
     if (v) u.voice = v;
     u.rate = 1.01; u.pitch = 0.9;
-    u.onend = () => { speaking = false; resolve(); };
-    u.onerror = () => { speaking = false; resolve(); };
+    const done = () => {
+      speaking = false;
+      if (heldUtterance === u) heldUtterance = null;
+      resolve();
+    };
+    u.onend = done;
+    u.onerror = done;
     window.speechSynthesis.speak(u);
   });
 }
@@ -591,6 +598,7 @@ function startRec() {
 function sleep() {
   awake = false;
   armed = true;
+  speaking = false;
   window.speechSynthesis.cancel();
   wakeBtn.textContent = "Say Hey Bill";
   wakeBtn.classList.remove("off");
