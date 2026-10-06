@@ -572,12 +572,21 @@ function startRec() {
   rec.lang = "en-US";
   rec.interimResults = true;
   rec.continuous = true;
+  rec.maxAlternatives = 3;
   if (!phraseBiasOff && window.SpeechRecognitionPhrase) {
     try { rec.phrases = [new SpeechRecognitionPhrase("Hey Bill", 8)]; }
     catch (e) { phraseBiasOff = true; }
   }
   rec.onresult = (e) => {
     if (rec !== mine || speaking) return;
+    if (!awake) {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const alts = e.results[i];
+        for (let a = 0; a < alts.length; a++) {
+          if (hearWake(alts[a].transcript)) { wake(); return; }
+        }
+      }
+    }
     let interim = "";
     let finalSaid = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
