@@ -1,20 +1,16 @@
-# Collapsed heybill still reaches the desk
+# Hide releases the phone mic
 
-Hour: 2026-10-06 04:13 EDT. Research only. Do not re-apply the Android continuous flag. It is already `rec.continuous = !/Android/i.test(navigator.userAgent)`. Do not re-apply the hearWake heybill match. It is already in `hearWake`. Do not set `processLocally`. Do not ship a synthetic Hey Bill model. Do not paste a Picovoice key. Do not upload to Netlify.
+Hour: 2026-10-06 05:13 EDT. Research only. Do not re-apply the heybill command gate. It is already in `handle(finalSaid)`. Do not re-apply the Android continuous flag, the hearWake heybill match, the alternatives scan, or the phrase bias. Do not set `processLocally`. Do not ship a synthetic Hey Bill model. Do not paste a Picovoice key. Do not upload to Netlify.
 
 ## What I learned
 
-Chrome for Android still does not honor `SpeechRecognition.continuous` (Can I use marks Chrome for Android unsupported; MDN still defaults the flag to false). Main already treats that as a phone restart loop. Leave it.
+The 04:13 gate is already on main. `index.html` now drops a final that is only the wake token, including collapsed `heybill`. Leave that line alone.
 
-The leftover is the command gate, not the wake match. `hearWake` accepts a collapsed `heybill`. The line that drops the wake phrase before `handle()` does not:
+The leftover is the phone mic when the tab is hidden. `startRec` already returns if `document.visibilityState === "hidden"`, and the visible path already calls `startRec`. Nothing aborts the session that is already running. Chrome and Safari keep that speech session in the background. On a phone that holds the mic, so the next visible `start()` is the one that hits `audio-capture` or a silent session. Aborting on hide is free and does not need an account. The existing hidden guard already stops the abort's restart from looping while the tab is away.
 
-`!/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)`
+Live https://bill-morris.netlify.app is still behind main. Its hint is still "One tap arms the mic. Then say Bill. Say sleep to drop back to the wake word." The published page has no `heybill`, no `maxAlternatives`, no phrase bias, and `continuous` still forced true. Phone layout on main was already clear at 390×844. No layout diff. Sleep already returns to the wake word. The open line is still one sentence (`Aldo, I'm here.`).
 
-An interim `heybill` can call `wake()`, which sets `awake` before the first await. The later final of that same token then fails the gate and is handed to the desk as a command. Matching that one token on the gate is free and does not need an account. Do not also match bell, build, or bull.
-
-Live https://bill-morris.netlify.app is still behind main. Its hint is still "One tap arms the mic. Then say Bill. Say sleep to drop back to the wake word." The published page has no `heybill`, no `maxAlternatives`, and no Android continuous flag. Phone layout on main was already clear at 390×844. No layout diff. Sleep already returns to the wake word. The open line is still one sentence (`Aldo, I'm here.`).
-
-WebKit bug 326069 is still NEW (reported 2026-10-02): iOS 27 may hear only the first session in a tab, and a reload does not clear it. No free page diff fixes that.
+WebKit bug 326069 is still NEW (last changed 2026-10-05). No workaround on the bug. This hide abort does not claim to fix iOS 27 hearing only the first session.
 
 ## Still blocking
 
@@ -22,14 +18,23 @@ Netlify free credits still block publish. Do not upload. Live can stay behind ma
 
 ## READY FOR UPDATE
 
-File: `index.html` only. Smallest diff, the `handle(finalSaid)` guard inside `startRec`:
+File: `index.html` only. Smallest diff, the `visibilitychange` listener:
 
 Replace
 
-`!/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)`
+`document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  if ((awake || armed) && !speaking) startRec();
+});`
 
 with
 
-`!/^\s*(((hey|ok|okay)?[, ]*bill|heybill)[.!,?\s]*)+$/i.test(finalSaid)`
+`document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") {
+    try { rec && rec.abort(); } catch (e) {}
+    return;
+  }
+  if ((awake || armed) && !speaking) startRec();
+});`
 
-Do not change `hearWake`, the phrase-bias block, `maxAlternatives`, `continuous`, `speak()`, the open line, the phone rule, or sleep. Do not add a local model.
+Do not change `hearWake`, the command gate, the phrase-bias block, `maxAlternatives`, `continuous`, `speak()`, the open line, the phone rule, or sleep. Do not add a local model.
