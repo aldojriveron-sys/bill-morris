@@ -513,8 +513,10 @@ async function handle(transcript) {
   else if (notes.length) sayLine("Bill", notes[0] + ".");
   const answer = replyTo(clean);
   if (answer === "__SLEEP__") {
-    sayLine("Bill", "Lights out. Gain stays on the board.");
-    await speak("Lights out. Gain stays on the board.");
+    const line = "Lights out. Gain stays on the board.";
+    sayLine("Bill", line);
+    lastBill = line;
+    await speak(line);
     sleep();
     return;
   }
