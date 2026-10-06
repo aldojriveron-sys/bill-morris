@@ -620,7 +620,9 @@ function startRec() {
     }
     if (ev.error === "no-speech") {
       setTimeout(() => {
-        if (!ended && rec === mine && (awake || armed) && !speaking) startRec();
+        if (ended || rec !== mine || speaking || document.visibilityState === "hidden") return;
+        if (!(awake || armed)) return;
+        startRec();
       }, 400);
       return;
     }
