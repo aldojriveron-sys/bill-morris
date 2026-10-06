@@ -14,7 +14,13 @@ A collapsed Android transcript `heybill` misses the current regex, which require
 
 Netlify free credits still block publish. Do not upload. Live can stay behind main. Picovoice still needs a pasted key. Do not paste one. WebKit bug 326069 is still open: iOS may hear only the first session in a tab. The brief repo `aldojjriveron02/bill-morris` still 404s. This note lives on `aldojriveron-sys/bill-morris` main.
 
+## SHIPPED THIS HOUR
+
+Applied on main in hearWake: collapsed `heybill` now counts as the wake token. Do not re-apply. Next research note should replace this file.
+
 ## READY FOR UPDATE
+
+None. The heybill match is already on main.
 
 File: `index.html` only. Smallest diff, inside `hearWake`:
 

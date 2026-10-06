@@ -522,7 +522,8 @@ async function handle(transcript) {
 let armed = false;
 let phraseBiasOff = false;
 function hearWake(transcript) {
-  return /\b(hey |ok |okay )?bill\b/.test(transcript.toLowerCase());
+  const q = transcript.toLowerCase();
+  return /\b(hey |ok |okay )?bill\b/.test(q) || /\bheybill\b/.test(q);
 }
 async function arm() {
   if (picoKey.value.trim()) {
