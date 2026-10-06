@@ -309,7 +309,8 @@ let audioCtx, analyser, micStream, meterTimer;
 let heldUtterance = null;
 
 function phoneMic() {
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const ua = navigator.userAgent;
+  return /Android|iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
 }
 function releaseMeter() {
   if (meterTimer) { clearInterval(meterTimer); meterTimer = null; }
