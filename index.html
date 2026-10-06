@@ -608,7 +608,11 @@ function startRec() {
       }, 400);
       return;
     }
-    if (awake || armed) setTimeout(startRec, 700);
+    setTimeout(() => {
+      if (ended || rec !== mine || speaking || document.visibilityState === "hidden") return;
+      if (!(awake || armed)) return;
+      startRec();
+    }, 700);
   };
   rec.onend = () => {
     ended = true;
