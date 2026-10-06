@@ -572,6 +572,7 @@ function startRec() {
   rec.interimResults = true;
   rec.continuous = true;
   rec.onresult = (e) => {
+    if (rec !== mine || speaking) return;
     let interim = "";
     let finalSaid = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
