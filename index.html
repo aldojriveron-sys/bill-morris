@@ -452,7 +452,7 @@ function replyTo(raw) {
   if (!text) return "Floor noise. Run it back.";
   if (/\b(sleep|lights out|toggle off|bill out|shut it down)\b/.test(q)) return "__SLEEP__";
   if (/who are you|your name|character|personality/.test(q)) {
-    return `Bill Morris. Desk engineer, not a mascot. Beach kid, Kendall rent, hotel-engineer father, mother kept the books. I rate talk the way I rate a mic: too hot, in the pocket, or noisy floor. Right now I'm ${lv.name}. Edge is ${lv.edge}.`;
+    return `Bill Morris. Desk engineer, not a mascot. Beach kid, Kendall rent, hotel-engineer father, mother kept the books. I rate talk the way I rate a mic: too hot, in the pocket, or noisy floor. Right now I'm ${lv.name}. Edge is ${channels.edge}.`;
   }
   if (/\b(status|check the desk|where are we|noise floor|compressor)\b/.test(q)) return deskStatus();
   if (/remember that/.test(q)) {
