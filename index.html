@@ -520,6 +520,7 @@ async function handle(transcript) {
 }
 
 let armed = false;
+let phraseBiasOff = false;
 function hearWake(transcript) {
   return /\b(hey |ok |okay )?bill\b/.test(transcript.toLowerCase());
 }
@@ -571,6 +572,10 @@ function startRec() {
   rec.lang = "en-US";
   rec.interimResults = true;
   rec.continuous = true;
+  if (!phraseBiasOff && window.SpeechRecognitionPhrase) {
+    try { rec.phrases = [new SpeechRecognitionPhrase("Hey Bill", 8)]; }
+    catch (e) { phraseBiasOff = true; }
+  }
   rec.onresult = (e) => {
     if (rec !== mine || speaking) return;
     let interim = "";
@@ -617,6 +622,15 @@ function startRec() {
         if (!(awake || armed)) return;
         startRec();
       }, 700);
+      return;
+    }
+    if (ev.error === "phrases-not-supported") {
+      phraseBiasOff = true;
+      setTimeout(() => {
+        if (ended || rec !== mine || speaking || document.visibilityState === "hidden") return;
+        if (!(awake || armed)) return;
+        startRec();
+      }, 400);
       return;
     }
     setTimeout(() => {
