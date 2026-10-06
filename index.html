@@ -609,6 +609,16 @@ function startRec() {
       }, 400);
       return;
     }
+    if (ev.error === "audio-capture") {
+      if (rec !== mine) return;
+      hint.textContent = "Mic dropped. Tap Arm Bill if it stays quiet.";
+      setTimeout(() => {
+        if (ended || rec !== mine || speaking || document.visibilityState === "hidden") return;
+        if (!(awake || armed)) return;
+        startRec();
+      }, 700);
+      return;
+    }
     setTimeout(() => {
       if (ended || rec !== mine || speaking || document.visibilityState === "hidden") return;
       if (!(awake || armed)) return;
