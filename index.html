@@ -596,7 +596,7 @@ function startRec() {
       else interim += chunk;
     }
     if (!awake && hearWake(interim || finalSaid)) { wake(); return; }
-    if (awake && finalSaid && !/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)) handle(finalSaid);
+    if (awake && finalSaid && !/^\s*(((hey|ok|okay)?[, ]*bill|heybill)[.!,?\s]*)+$/i.test(finalSaid)) handle(finalSaid);
   };
   let ended = false;
   rec.onerror = (ev) => {
