@@ -358,9 +358,11 @@ function speak(text) {
       if (settled) return;
       settled = true;
       clearTimeout(watch);
-      speaking = false;
-      if (heldUtterance === u) heldUtterance = null;
-      resolve();
+      setTimeout(() => {
+        speaking = false;
+        if (heldUtterance === u) heldUtterance = null;
+        resolve();
+      }, 320);
     };
     const watch = setTimeout(done, Math.min(12000, 1600 + text.length * 90));
     u.onend = done;
