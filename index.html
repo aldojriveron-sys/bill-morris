@@ -654,7 +654,11 @@ function startRec() {
   rec.onend = () => {
     ended = true;
     if (rec !== mine) return;
-    if ((awake || armed) && !speaking) setTimeout(startRec, 250);
+    setTimeout(() => {
+      if (rec !== mine || speaking || document.visibilityState === "hidden") return;
+      if (!(awake || armed)) return;
+      startRec();
+    }, 250);
   };
   if (phoneMic()) releaseMeter();
   try { rec.start(); if (awake) setStatus("live", "Listening"); }
