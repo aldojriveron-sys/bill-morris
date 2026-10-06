@@ -710,6 +710,8 @@ async function wake() {
     return;
   }
   awake = true;
+  speaking = true;
+  try { rec && rec.abort(); } catch (e) {}
   wakeBtn.textContent = "Bill is live";
   wakeBtn.classList.add("off");
   await openMeter();
