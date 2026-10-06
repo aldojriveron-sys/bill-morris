@@ -1,36 +1,29 @@
-# Phone Chrome drops wake alternatives
+# Phone Chrome ignores continuous
 
-Hour: 2026-10-06 02:17 EDT. Research only. Do not re-apply the 01:13 alternatives scan. It is already in `index.html` (`rec.maxAlternatives = 3` and the asleep alt loop). Do not set `processLocally`. Do not ship a synthetic Hey Bill model. Do not paste a Picovoice key. Do not upload to Netlify.
+Hour: 2026-10-06 03:15 EDT. Research only. Do not re-apply the 02:17 heybill match. It is already in `hearWake`. Do not set `processLocally`. Do not ship a synthetic Hey Bill model. Do not paste a Picovoice key. Do not upload to Netlify.
 
 ## What I learned
 
-The alternatives scan cannot help the phone while it is online. Chrome for Android's cloud recognizer ignores `maxAlternatives` and returns only alternative 0. The same call returns several alternatives in flight mode, which means the online request drops the option. Stack Overflow 77862090, February 2024, still matches the desk: phone wake is the single transcript through `hearWake`. Phrase bias still does not run there. `SpeechRecognitionPhrase` is a desktop Chrome 142+ path; Can I use still lists Chrome for Android as unsupported. The boost of 8 on main stays in the legal 0.0–10.0 range and must not be raised.
+Chrome for Android can set `SpeechRecognition.continuous`, but the flag has no effect. MDN marks the property unsupported there: the session still ends after one result. The desk sets `rec.continuous = true` for every browser, then restarts from `onend` at 250ms. That restart is already the phone wake loop. A held-open mic is a desktop behavior, not a phone one.
 
-Live https://bill-morris.netlify.app is behind main. Its hint is still “One tap arms the mic. Then say Bill.” It has `hearWake` and does not have `maxAlternatives` or `SpeechRecognitionPhrase`. Phone layout on main was already clear at 390×844. No layout diff. Sleep already returns to the wake word. The open line is still one sentence (`Aldo, I'm here.`).
+Setting continuous false on Android only is free and does not need an account. On Chrome Android it matches the ignored flag. On other Android browsers, continuous true is the unstable path (no-speech and busy loops). Leave iPhone on true: Safari iOS does honor continuous, and WebKit 326069 already limits a tab to one good session. Do not call `SpeechRecognition.available({ processLocally: true })` on the phone. A May 2026 Chrome Android trace still returns `unavailable` because the on-device model is not shipped. A call there would fail the arm.
 
-A collapsed Android transcript `heybill` misses the current regex, which requires `bill` as its own word. Matching that one token is free and does not need an account.
+Live https://bill-morris.netlify.app is still behind main. Hint is still "One tap arms the mic. Then say Bill." The published page has no `heybill` and no `maxAlternatives`. Phone layout on main was already clear at 390×844. Sleep already returns to the wake word. The open line is still one sentence (`Aldo, I'm here.`).
 
 ## Still blocking
 
-Netlify free credits still block publish. Do not upload. Live can stay behind main. Picovoice still needs a pasted key. Do not paste one. WebKit bug 326069 is still open: iOS may hear only the first session in a tab. The brief repo `aldojjriveron02/bill-morris` still 404s. This note lives on `aldojriveron-sys/bill-morris` main.
-
-## SHIPPED THIS HOUR
-
-Applied on main in hearWake: collapsed `heybill` now counts as the wake token. Do not re-apply. Next research note should replace this file.
+Netlify free credits still block publish. Do not upload. Live can stay behind main. Picovoice still needs a pasted key. Do not paste one. WebKit bug 326069 is still open (reported 2026-10-02, status NEW): iOS 27 may hear only the first session in a tab, and a reload does not clear it. The brief repo `aldojjriveron02/bill-morris` still 404s. This note lives on `aldojriveron-sys/bill-morris` main.
 
 ## READY FOR UPDATE
 
-None. The heybill match is already on main.
-
-File: `index.html` only. Smallest diff, inside `hearWake`:
+File: `index.html` only. Smallest diff, inside `startRec`:
 
 Replace
 
-`return /\b(hey |ok |okay )?bill\b/.test(transcript.toLowerCase());`
+`rec.continuous = true;`
 
 with
 
-`const q = transcript.toLowerCase();`
-`return /\b(hey |ok |okay )?bill\b/.test(q) || /\bheybill\b/.test(q);`
+`rec.continuous = !/Android/i.test(navigator.userAgent);`
 
-Do not also match bell, build, or bull. Do not change the phrase-bias block, `maxAlternatives`, `speak()`, the open line, the phone rule, or sleep.
+Do not change `hearWake`, the phrase-bias block, `maxAlternatives`, `speak()`, the open line, the phone rule, or sleep. Do not add a local model.
