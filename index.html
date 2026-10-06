@@ -572,7 +572,7 @@ function startRec() {
   const mine = rec;
   rec.lang = "en-US";
   rec.interimResults = true;
-  rec.continuous = true;
+  rec.continuous = !/Android/i.test(navigator.userAgent);
   rec.maxAlternatives = 3;
   if (!phraseBiasOff && window.SpeechRecognitionPhrase) {
     try { rec.phrases = [new SpeechRecognitionPhrase("Hey Bill", 8)]; }
