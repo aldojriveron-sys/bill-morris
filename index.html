@@ -359,8 +359,10 @@ function speak(text) {
       settled = true;
       clearTimeout(watch);
       setTimeout(() => {
-        speaking = false;
-        if (heldUtterance === u) heldUtterance = null;
+        if (heldUtterance === u) {
+          speaking = false;
+          heldUtterance = null;
+        }
         resolve();
       }, 320);
     };
@@ -711,6 +713,7 @@ async function wake() {
   }
   awake = true;
   speaking = true;
+  heldUtterance = null;
   try { rec && rec.abort(); } catch (e) {}
   wakeBtn.textContent = "Bill is live";
   wakeBtn.classList.add("off");
