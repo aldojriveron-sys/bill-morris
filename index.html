@@ -503,7 +503,7 @@ async function handle(transcript) {
   const clean = transcript.replace(/\s+/g, " ").trim();
   const said = clean.toLowerCase().replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
   const bill = (lastBill || "").toLowerCase().replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
-  if (!clean || (bill && (said.includes(bill.slice(0, 22)) || (said.length >= 8 && bill.endsWith(said))))) return;
+  if (!clean || (bill && (said.includes(bill.slice(0, 22)) || (said.length >= 8 && bill.includes(said))))) return;
   sayLine("You", clean);
   setStatus("think", "On it");
   const before = level().name;
