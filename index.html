@@ -668,7 +668,7 @@ function startRec() {
       startRec();
     }, 250);
   };
-  if (phoneMic()) releaseMeter();
+  releaseMeter();
   try { rec.start(); if (awake) setStatus("live", "Listening"); }
   catch (e) {
     setTimeout(() => {
