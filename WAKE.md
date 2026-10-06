@@ -1,29 +1,35 @@
-# Phone Chrome ignores continuous
+# Collapsed heybill still reaches the desk
 
-Hour: 2026-10-06 03:15 EDT. Research only. Do not re-apply the 02:17 heybill match. It is already in `hearWake`. Do not set `processLocally`. Do not ship a synthetic Hey Bill model. Do not paste a Picovoice key. Do not upload to Netlify.
+Hour: 2026-10-06 04:13 EDT. Research only. Do not re-apply the Android continuous flag. It is already `rec.continuous = !/Android/i.test(navigator.userAgent)`. Do not re-apply the hearWake heybill match. It is already in `hearWake`. Do not set `processLocally`. Do not ship a synthetic Hey Bill model. Do not paste a Picovoice key. Do not upload to Netlify.
 
 ## What I learned
 
-Chrome for Android can set `SpeechRecognition.continuous`, but the flag has no effect. MDN marks the property unsupported there: the session still ends after one result. The desk sets `rec.continuous = true` for every browser, then restarts from `onend` at 250ms. That restart is already the phone wake loop. A held-open mic is a desktop behavior, not a phone one.
+Chrome for Android still does not honor `SpeechRecognition.continuous` (Can I use marks Chrome for Android unsupported; MDN still defaults the flag to false). Main already treats that as a phone restart loop. Leave it.
 
-Setting continuous false on Android only is free and does not need an account. On Chrome Android it matches the ignored flag. On other Android browsers, continuous true is the unstable path (no-speech and busy loops). Leave iPhone on true: Safari iOS does honor continuous, and WebKit 326069 already limits a tab to one good session. Do not call `SpeechRecognition.available({ processLocally: true })` on the phone. A May 2026 Chrome Android trace still returns `unavailable` because the on-device model is not shipped. A call there would fail the arm.
+The leftover is the command gate, not the wake match. `hearWake` accepts a collapsed `heybill`. The line that drops the wake phrase before `handle()` does not:
 
-Live https://bill-morris.netlify.app is still behind main. Hint is still "One tap arms the mic. Then say Bill." The published page has no `heybill` and no `maxAlternatives`. Phone layout on main was already clear at 390×844. Sleep already returns to the wake word. The open line is still one sentence (`Aldo, I'm here.`).
+`!/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)`
+
+An interim `heybill` can call `wake()`, which sets `awake` before the first await. The later final of that same token then fails the gate and is handed to the desk as a command. Matching that one token on the gate is free and does not need an account. Do not also match bell, build, or bull.
+
+Live https://bill-morris.netlify.app is still behind main. Its hint is still "One tap arms the mic. Then say Bill. Say sleep to drop back to the wake word." The published page has no `heybill`, no `maxAlternatives`, and no Android continuous flag. Phone layout on main was already clear at 390×844. No layout diff. Sleep already returns to the wake word. The open line is still one sentence (`Aldo, I'm here.`).
+
+WebKit bug 326069 is still NEW (reported 2026-10-02): iOS 27 may hear only the first session in a tab, and a reload does not clear it. No free page diff fixes that.
 
 ## Still blocking
 
-Netlify free credits still block publish. Do not upload. Live can stay behind main. Picovoice still needs a pasted key. Do not paste one. WebKit bug 326069 is still open (reported 2026-10-02, status NEW): iOS 27 may hear only the first session in a tab, and a reload does not clear it. The brief repo `aldojjriveron02/bill-morris` still 404s. This note lives on `aldojriveron-sys/bill-morris` main.
+Netlify free credits still block publish. Do not upload. Live can stay behind main. Picovoice still needs a pasted key. Do not paste one. WebKit bug 326069 is still open. The brief repo `aldojjriveron02/bill-morris` still 404s. This note lives on `aldojriveron-sys/bill-morris` main.
 
 ## READY FOR UPDATE
 
-File: `index.html` only. Smallest diff, inside `startRec`:
+File: `index.html` only. Smallest diff, the `handle(finalSaid)` guard inside `startRec`:
 
 Replace
 
-`rec.continuous = true;`
+`!/^\s*((hey|ok|okay)?[, ]*bill[.!,?\s]*)+$/i.test(finalSaid)`
 
 with
 
-`rec.continuous = !/Android/i.test(navigator.userAgent);`
+`!/^\s*(((hey|ok|okay)?[, ]*bill|heybill)[.!,?\s]*)+$/i.test(finalSaid)`
 
-Do not change `hearWake`, the phrase-bias block, `maxAlternatives`, `speak()`, the open line, the phone rule, or sleep. Do not add a local model.
+Do not change `hearWake`, the phrase-bias block, `maxAlternatives`, `continuous`, `speak()`, the open line, the phone rule, or sleep. Do not add a local model.
