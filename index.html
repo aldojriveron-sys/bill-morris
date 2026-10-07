@@ -537,8 +537,10 @@ function hearWake(transcript) {
 }
 async function arm() {
   try {
+    window.speechSynthesis.resume();
     const prime = new SpeechSynthesisUtterance(" ");
     prime.volume = 0;
+    heldUtterance = prime;
     window.speechSynthesis.speak(prime);
   } catch (e) {}
   if (picoKey.value.trim()) {
