@@ -724,7 +724,7 @@ async function wake() {
   await speak(open);
   hint.textContent = phoneMic()
     ? "Hands-free. Say sleep to drop back to the wake word."
-    : "Hands-free. Bars are mic gain. The number is desk gain. Say sleep to toggle off.";
+    : "Hands-free. Bars are mic gain. The number is desk gain. Say sleep to drop back to the wake word.";
   startRec();
 }
 wakeBtn.addEventListener("click", () => awake ? sleep() : (armed ? wake() : arm()));
