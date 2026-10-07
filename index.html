@@ -536,6 +536,11 @@ function hearWake(transcript) {
   return /\b(hey |ok |okay )?bill\b/.test(q) || /\bheybill\b/.test(q);
 }
 async function arm() {
+  try {
+    const prime = new SpeechSynthesisUtterance(" ");
+    prime.volume = 0;
+    window.speechSynthesis.speak(prime);
+  } catch (e) {}
   if (picoKey.value.trim()) {
     const ok = await armPorcupine();
     if (ok) return;
